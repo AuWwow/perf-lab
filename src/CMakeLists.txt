@@ -1,10 +1,13 @@
-add_library(perf-lab STATIC)
+add_library(perf-lab-lib STATIC)
 
-target_include_directories(perf-lab
+add_subdirectory(include)
+
+target_link_libraries(perf-lab-lib
     PUBLIC
-        ${CMAKE_SOURCE_DIR}/include
+        allocator-headers
 )
 
 add_subdirectory(libs)
+add_subdirectory(cash_bench)
 # add_subdirectory(memory)
 # add_subdirectory(ds)

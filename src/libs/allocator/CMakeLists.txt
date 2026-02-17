@@ -1,4 +1,4 @@
 
-target_sources(perf-lab PRIVATE
+target_sources(perf-lab-lib PRIVATE
         alloc.c
 )
