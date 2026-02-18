@@ -1,7 +1,3 @@
-// #include <stdio.h>
-// #include <stdlib.h>
-// #include <stdbool.h>
-#include <stdlib.h>
 #include "allocator/allocator.h"
 
 #define BLOCK_SIZE 256
