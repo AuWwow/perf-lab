@@ -1,5 +1,14 @@
-#ifndef ALLOCATOR_LIB_H
-#define ALLOCATOR_LIB_H
+/*
+ * @author  AuWwow
+ * @github  https://github.com/AuWwow
+ * @mail    vladdlav324@gmail.com
+ * @file    allocator.h
+ * @date    2026-03-04
+ */
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+
+#ifndef _ALLOCATOR_H_
+#define _ALLOCATOR_H_
 
 #include <stdlib.h>
 #include <stddef.h>
@@ -34,4 +43,15 @@ VariableAllocator* initVariableAllocator(size_t size);
 void* allocateVariableBlock(VariableAllocator* allocator, size_t size);
 // void freeVariableBlock(VariableAllocator* allocator, void* ptr);
 
-#endif // ALLOCATOR_LIB_H
+#define MAX_ORDER 10
+
+typedef struct {
+    void* memory;
+    void** free_lists;
+    size_t min_block_size;
+    size_t max_order;
+} BuddyAllocator;
+
+BuddyAllocator* initBuddyAllocator(size_t min_block_size);
+
+#endif  // _ALLOCATOR_H_

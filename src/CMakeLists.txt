@@ -8,6 +8,6 @@ target_link_libraries(perf-lab-lib
 )
 
 add_subdirectory(libs)
-add_subdirectory(cash_bench)
+add_subdirectory(tests)
 # add_subdirectory(memory)
 # add_subdirectory(ds)

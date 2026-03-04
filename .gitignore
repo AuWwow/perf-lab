@@ -7,9 +7,16 @@ venv/
 .venv/
 env/
 
+# C Object Files
+*.o
+*.a
+*.d
+
 # Build outputs
 dist/
 build/
+img/
+*.bin
 
 # IDE
 .vscode/

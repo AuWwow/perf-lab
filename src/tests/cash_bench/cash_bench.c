@@ -1,3 +1,13 @@
+/*
+ * @author  AuWwow
+ * @github  https://github.com/AuWwow
+ * @mail    vladdlav324@gmail.com
+ * @file    cash_bench.c
+ * @date    2026-03-04
+ */
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+
+
 #include <stdio.h>
 #include "allocator/allocator.h"
 
@@ -5,8 +15,7 @@ void TestFixedAllocator();
 void TestVariableAllocator();
 
 int main(void) {
-
-    // TestFixedAllocator();
+    TestFixedAllocator();
     TestVariableAllocator();
     return 0;
 }
@@ -36,9 +45,9 @@ void TestFixedAllocator() {
 void TestVariableAllocator() {
     VariableAllocator* allocator = initVariableAllocator(128);
 
-    void* block1 = allocateVariableBlock(allocator, 64);
-    void* block2 = allocateVariableBlock(allocator, 64);
-    void* block3 = allocateVariableBlock(allocator, 64);
+    void* block1 = allocateVariableBlock(allocator, 1);
+    void* block2 = allocateVariableBlock(allocator, 1);
+    void* block3 = allocateVariableBlock(allocator, 1);
 
     printf("Allocated block 1 at: %p\n", block1);
     printf("Allocated block 2 at: %p\n", block2);
@@ -47,4 +56,10 @@ void TestVariableAllocator() {
     // freeVariableBlock(allocator, block1);
     // freeVariableBlock(allocator, block2);
     // freeVariableBlock(allocator, block3);
+}
+
+void TestBobbySystem() {
+
+    BuddyAllocator *allocator = initBuddyAllocator(64);
+
 }

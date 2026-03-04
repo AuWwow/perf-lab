@@ -1,3 +1,12 @@
+/*
+ * @author  AuWwow
+ * @github  https://github.com/AuWwow
+ * @mail    vladdlav324@gmail.com
+ * @file    var_size.c
+ * @date    2026-03-04
+ */
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+
 
 #include "allocator/allocator.h"
 
@@ -59,4 +68,31 @@ void* allocateVariableBlock(VariableAllocator* allocator, size_t size) {
     
     best_fit->is_allocated = true;
     return (char*)best_fit + sizeof(VariableBlock);
+}
+
+void freeVariableBlock(VariableAllocator* allocator, void* ptr) {
+    if(ptr == NULL) return;
+    
+    VariableBlock* block = (VariableBlock*)((char*)ptr - sizeof(VariableBlock));
+    block->is_allocated = false;
+    
+    // Merge with adjacent free blocks
+    if(block->prev != NULL && !block->prev->is_allocated) {
+        VariableBlock* prev = block->prev;
+        prev->size += block->size + sizeof(VariableBlock);
+        prev->next = block->next;
+        if(block->next != NULL) {
+            block->next->prev = prev;
+        }
+        block = prev;
+    }
+    
+    if(block->next != NULL && !block->next->is_allocated) {
+        VariableBlock* next = block->next;
+        block->size += next->size + sizeof(VariableBlock);
+        block->next = next->next;
+        if(next->next != NULL) {
+            next->next->prev = block;
+        }
+    }
 }

@@ -1,3 +1,13 @@
+/*
+ * @author  AuWwow
+ * @github  https://github.com/AuWwow
+ * @mail    vladdlav324@gmail.com
+ * @file    alloc.c
+ * @date    2026-03-04
+ */
+// ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ 
+
+
 #include "allocator/allocator.h"
 
 #define BLOCK_SIZE 256
