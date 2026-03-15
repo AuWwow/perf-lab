@@ -1,0 +1,46 @@
+perf-lab/
+├── cmake/                          # переиспользуемые модули
+│   ├── TargetHostSim.cmake
+│   ├── TargetRP2040.cmake
+│   ├── TargetRenodeSTM32.cmake
+│   ├── TargetMyRTOS.cmak
+│   ├── FreeRTOSHelpers.cmake
+│   └── Sanitizers.cmake
+├── docs/
+│   ├── architecture.drawio
+│   └── latency-measurement.md
+├── external/
+│   ├── FreeRTOS-Kernel/
+│   ├── pico-sdk/
+│   └── lwip/
+├── img/
+├── scripts/
+│   ├── build.sh
+│   ├── clean.sh
+│   ├── sim-posix.sh
+│   ├── renode-run.sh
+│   ├── pico-flash.sh
+│   └── plot-latency.py
+├── src/
+│   ├── app/
+│   ├── drivers/
+│   ├── middleware/
+│   ├── shared/
+│   └── kernel/
+│       ├── include/
+│       ├── core/
+│       └── port/
+│           ├── arm-cortex-m/
+│           └── host-sim/
+├── targets/
+│   ├── freertos/
+│   ├── my-rtos/
+│   ├── host-sim/
+│   └── rp2040-pico/
+├── tests/
+├── third_party/
+├── CMakeLists.txt
+├── .clang-format
+├── .gitignore
+├── CMakeCache.txt
+└── README.md
