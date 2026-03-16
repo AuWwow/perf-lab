@@ -7,13 +7,14 @@ This repository currently focuses on allocator prototypes and benchmark-style te
 ## Table of Contents
 
 1. [Project Vision](#project-vision)
-2. [Current Repository State](#current-repository-state)
-3. [Quick Start](#quick-start)
-4. [Build Output](#build-output)
-5. [Target Architecture (Roadmap)](#target-architecture-roadmap)
-6. [Full Technical Specification (Semantic Part)](#full-technical-specification-semantic-part)
-7. [Acceptance Criteria](#acceptance-criteria)
-8. [Extensions](#extensions)
+2. [Repository Structure](#repository-structure)
+3. [Current Repository State](#current-repository-state)
+4. [Quick Start](#quick-start)
+5. [Build Output](#build-output)
+6. [Target Architecture (Roadmap)](#target-architecture-roadmap)
+7. [Full Technical Specification (Semantic Part)](#full-technical-specification-semantic-part)
+8. [Acceptance Criteria](#acceptance-criteria)
+9. [Extensions](#extensions)
 
 ## Project Vision
 
@@ -24,20 +25,71 @@ Build a demonstration prototype of a deterministic real-time event engine for re
 - No runtime `malloc` in production data path
 - Optional telemetry export over UART / UDP
 
+## Repository Structure
+
+```
+perf-lab/
+├── cmake/                          # Reusable CMake modules
+│   ├── TargetHostSim.cmake         # Host simulation target config
+│   ├── TargetRP2040.cmake          # Raspberry Pi Pico target config
+│   ├── TargetRenodeSTM32.cmake     # Renode STM32F4 target config
+│   ├── TargetMyRTOS.cmake          # Custom RTOS target config
+│   ├── FreeRTOSHelpers.cmake       # FreeRTOS integration helpers
+│   ├── Sanitizers.cmake            # Sanitizer configuration
+│   └── CompilerWarnings.cmake      # Warning flags
+├── docs/                           # Documentation
+│   ├── architecture.txt            # Project architecture overview
+│   └── my-rtos.md                  # Custom RTOS documentation
+├── external/                       # Git submodules (FreeRTOS, pico-sdk, lwip)
+├── img/                            # Build artifacts (.bin, .uf2, .elf files)
+├── scripts/                        # Build and utility scripts
+│   ├── build.sh                    # Main build script
+│   ├── clean.sh                    # Clean build artifacts
+│   ├── sim-posix.sh                # POSIX simulator runner
+│   ├── renode-run.sh               # Renode emulator runner
+│   ├── pico-flash.sh               # Pico flashing script
+│   └── plot-latency.py             # Latency plotting utility
+├── src/                            # Source code
+│   ├── app/                        # Application entry points
+│   ├── drivers/                    # Hardware drivers
+│   ├── middleware/                 # Middleware components
+│   └── shared/                     # Shared libraries and utilities
+│       ├── include/                # Public headers
+│       └── libs/                   # Library implementations
+├── targets/                        # Target-specific configurations
+│   ├── host-sim/                   # POSIX FreeRTOS simulation
+│   ├── rp2040-pico/                # Raspberry Pi Pico
+│   ├── renode-stm32f4/             # Renode STM32F4 emulation
+│   └── my-rtos/                    # Custom RTOS implementation
+├── tests/                          # Unit and integration tests
+│   ├── cash_bench/                 # Benchmark tests
+│   └── sandbox/                    # Development sandbox
+├── CMakeLists.txt                  # Root CMake configuration
+├── .clang-format                   # Code formatting rules
+├── .gitignore                      # Git ignore patterns
+└── README.md                       # This file
+```
+
 ## Current Repository State
 
 What exists now:
 
-- CMake-based C project (`C11`)
-- `perf-lab-lib` static library
-- Allocator experiments:
+- Multi-target CMake-based C project (`C11`) supporting host, embedded, and simulation platforms
+- Modular architecture with reusable CMake modules
+- `perf-lab-lib` static library with shared utilities
+- Allocator experiments in `src/shared/libs/allocator/`:
   - Fixed-size allocator
   - Variable-size allocator (in progress)
   - Buddy allocator skeleton
-- Test-style binaries:
-  - `cash-bench.bin`
-  - `sandbox.bin`
-- Build helper script: `scripts/build.sh`
+- Target-specific configurations in `targets/`:
+  - Host POSIX simulation
+  - Raspberry Pi Pico (RP2040)
+  - Renode STM32F4 emulation
+  - Custom RTOS implementation
+- Test binaries in `tests/`:
+  - `cash_bench/` - Performance benchmarks
+  - `sandbox/` - Development experiments
+- Build system: `scripts/build.sh` with multi-target support
 
 Current code is a development sandbox and does not yet implement the full event-aggregator architecture described below.
 
@@ -51,36 +103,67 @@ Current code is a development sandbox and does not yet implement the full event-
 
 ### Build (recommended)
 
+Build for host simulation (default):
+
 ```bash
-./scripts/build.sh --debug
+./scripts/build.sh host --debug
+```
+
+Build for Raspberry Pi Pico:
+
+```bash
+./scripts/build.sh pico --debug
+```
+
+Build for Renode STM32F4 emulation:
+
+```bash
+./scripts/build.sh renode --debug
+```
+
+Build for custom RTOS:
+
+```bash
+./scripts/build.sh my-rtos --debug
 ```
 
 Release build:
 
 ```bash
-./scripts/build.sh --release
+./scripts/build.sh host --release
 ```
 
 Clean rebuild with custom parallelism:
 
 ```bash
-./scripts/build.sh --clean --release -j 8
+./scripts/build.sh host --clean --release -j 8
 ```
+
+### Supported Targets
+
+- `host` - POSIX FreeRTOS simulator (default)
+- `pico` - Raspberry Pi Pico / Pico 2 (RP2040/RP2350)
+- `renode` - Renode + STM32F4 emulation
+- `my-rtos` - Custom RTOS implementation
 
 ### Build (manual CMake)
 
 ```bash
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DTARGET=host
 cmake --build build
 ```
 
 ## Build Output
 
-After `scripts/build.sh`, project `.bin` artifacts are copied to `img/`:
+After `scripts/build.sh`, project executables are built in `build/bin/` and artifacts are copied to `img/`:
 
-- `img/cash-bench.bin`
-- `img/sandbox.bin`
-- (and other project `.bin` targets, if added)
+- `img/cash-bench.bin` - Benchmark test binary
+- `img/sandbox.bin` - Development sandbox binary
+- `img/perf-lab` - Host simulation executable
+- `img/perf-lab.uf2` - Pico UF2 firmware (when building for pico)
+- `img/perf-lab.elf` - STM32F4 ELF binary (when building for renode)
+
+Executables can be run directly from `build/bin/` for host targets.
 
 ## Target Architecture (Roadmap)
 

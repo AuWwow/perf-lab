@@ -2,6 +2,9 @@
 
 # Custom RTOS - no FreeRTOS dependency
 
+# Add kernel
+add_subdirectory(${CMAKE_SOURCE_DIR}/src/kernel ${CMAKE_CURRENT_BINARY_DIR}/kernel)
+
 # Create executable
 add_executable(perf-lab-my-rtos
     ${CMAKE_SOURCE_DIR}/src/app/main.c
@@ -10,6 +13,7 @@ add_executable(perf-lab-my-rtos
 target_link_libraries(perf-lab-my-rtos
     PRIVATE
         perf-lab-lib
+        kernel-lib
 )
 
 # Set output name and directory
